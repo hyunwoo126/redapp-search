@@ -1,7 +1,10 @@
-const express = require('express');
+const http = require('http');
 
-const app = express();
+const hostname = '127.0.0.1';
+const port = process.env.PORT || 5000;
 
-app.get('/', function(req, res) {	
-	res.send('hey there');
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World\n');
 });
