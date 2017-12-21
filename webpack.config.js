@@ -8,8 +8,8 @@ module.exports = {
       path: path.resolve(__dirname+'/public/', 'dist')
     },
     devServer: {
-        publicPath:"/dist/",
-        contentBase: path.resolve(__dirname+'/public/', 'dist'),
+        publicPath:"/",
+        contentBase: path.resolve(__dirname+'/public/dist', '.'),
         port: 3000,
         proxy: {
             "/search": {

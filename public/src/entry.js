@@ -1,4 +1,5 @@
 require('./modules/polyfill')();
+const makeCancelable = require('./modules/makeCancelablePromise');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -161,6 +162,7 @@ class App extends React.Component{
                     status: 'waiting',
                 },
             },
+            searchRequests: [],
             currentTerm: '',
             searchTerm: '',
             searching: false,
@@ -170,13 +172,22 @@ class App extends React.Component{
         }
     }
 
-    clearSearchResult(){
+    clearSearch(){
+        var requests = this.state.searchRequests;
+        if(requests.length > 0){
+            for(var i in requests){
+                requests[i].cancel();
+            }
+        }
+        this.state.searchRequests = [];
+        
         var stores = this.state.stores;
         for(var store in stores){
             stores[store].status = 'waiting';
         }
 
         this.setState({
+            searchRequests: [],
             stores: stores,
             searchTerm: '',
             searchResult:[],
@@ -188,68 +199,78 @@ class App extends React.Component{
 
     search(){
         const searchTerm = this.state.currentTerm;
-        this.clearSearchResult();
+        if(searchTerm == ''){ return; }
+        this.clearSearch();
         this.setState({
             searchTerm: searchTerm,
             searching: true, 
             landing: false
         });
         
-        console.log(this);
         var that = this;
         var promises = [];
-        for(let store in this.state.stores){         
-            promises.push(
-                fetch("/search", {
-                    method: "POST",
-                    headers: {
-                        'Accept': 'application/json, text/plain, */*',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        store: store,
-                        appName: searchTerm,
-                    })
+        for(let store in this.state.stores){
+
+            let cancelablePromise = makeCancelable(fetch("/search", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    store: store,
+                    appName: searchTerm,
                 })
-                .then((resp) => resp.json()
-                )
-                .then(function(data){
-                    console.log('later '+store);
-                    console.log(data);
-                    if(data.error === true){
-                        throw new Error('data.error == true');
-                    } else {
-                        var dl = that.state.totalDL;
-                        var hits = that.state.hits;
-                        for(var i in data.result){
-                            hits++; dl += data.result[i].downloads;
-                        }
-    
-                        var result = that.state.searchResult;
-                        result.push(data);
-                        var stores = that.state.stores;
-                        stores[data.store].status = 'success';
-                        that.setState({
-                            stores: stores,
-                            searchResult: result,
-                            hits: hits, totalDL: dl,
-                        });
+            }));
+
+            cancelablePromise.promise
+            .then((resp) => resp.json())
+            .then(function(data){
+                if(data.error === true){
+                    throw new Error('data.error == true');
+                } else {
+                    var dl = that.state.totalDL;
+                    var hits = that.state.hits;
+                    for(var i in data.result){
+                        hits++; dl += data.result[i].downloads;
                     }
-                }).catch(function(error){
+
+                    var result = that.state.searchResult;
+                    result.push(data);
+                    var stores = that.state.stores;
+                    stores[data.store].status = 'success';
+                    that.setState({
+                        stores: stores,
+                        searchResult: result,
+                        hits: hits, totalDL: dl,
+                    });
+                }
+            })
+            .catch(function(error){
+                if(error.isCanceled){
+                    //do nothing
+                } else {
                     var stores = that.state.stores;
                     stores[store].status = 'failed';
                     that.setState({stores: stores});
-                })
-            );
-
-            Promise.all(promises).then(function(results){
-                if(results.length == Object.keys(that.state.stores).length){
-                    that.setState({searching: false});
                 }
             });
-
+            
+            let requests = this.state.searchRequests;
+            requests.push(cancelablePromise);
+            this.setState({
+                searchRequests: requests
+            });
+            promises.push(cancelablePromise.promise);
         }
 
+        Promise.all(promises).then(function(results){
+            that.setState({searching: false});
+        }).catch(function(error){
+            if(!error.isCanceled){
+                console.error(error);
+            }
+        });
         
     }
 
@@ -274,6 +295,20 @@ class App extends React.Component{
         }
     }
 
+    renderSearchbar(){
+        return (
+            <div className="searchbar">
+                <input type="text" placeholder="try 微信 or QQ" autoFocus="true" className="base_boxshadow_1"
+                    onChange={(event) => this.handleInputChange(event)} 
+                    onKeyPress={(event) => this.handleKeypress(event)}
+                />
+                <button onClick= {() => this.search()}>
+                <i className="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </div>
+        );
+    }
+
 
     render(){
         return(
@@ -281,11 +316,7 @@ class App extends React.Component{
                 <div className="app_top">
                     <center>
                         <h1>China's Android Market</h1>
-                        <input type="text" placeholder="try 微信 or QQ" autoFocus="true"
-                            onChange={(event) => this.handleInputChange(event)} 
-                            onKeyPress={(event) => this.handleKeypress(event)}
-                        />
-                        <button onClick= {() => this.search() }>search</button>
+                        {this.renderSearchbar()}
                         <img src="img/bg.jpg"/>
                         <StoreStatusBar landing={this.state.landing} stores={this.state.stores}/>
                     </center>
