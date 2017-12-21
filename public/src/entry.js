@@ -49,7 +49,7 @@ class SearchResultStores extends React.Component{
         return (this.props.searchResult.map((store, i)=>{
             return(
                 <li key={i} className="li_store" id={"anchor_"+store.store}>
-                    <a href={this.props.storeInfo[store.store].homeUrl} className="storeHeading">
+                    <a href={this.props.storeInfo[store.store].homeUrl} className="storeHeading" target="_blank">
                         <h3><img src={"img/stores/"+store.store+".png"}/> {store.store}</h3>
                     </a>
                     <ul>
