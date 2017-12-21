@@ -1,12 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 //myModules
-const appStores = require('./myModules/appstores');
-
-
-
-
-
+//const appStores = require('./myModules/appstores');
 
 
 var app = express();
