@@ -1,0 +1,123 @@
+li{
+    list-style: none;
+}
+ul ul{
+    margin-left: 0px;
+}
+.inline-block{
+    display: inline-block !important;
+}
+
+#app{
+    max-width: 1000px;
+    margin: auto;
+}
+
+.app_list{
+    max-width: 800px;
+}
+
+.app_top img{
+    display: none;
+    max-height: 460px;
+    opacity: 0.3;
+    margin-top: 40px;
+    max-width: 100%;
+}
+.app.landing .app_top img{
+    display: block;
+}
+
+.storeStatus{
+    margin: 0px 10px;
+    color: #6f6f6f;
+    display: inline-block;
+    cursor: pointer; cursor: hand;
+}
+.storeStatus:hover{
+    color: #1EAEDB;
+}
+.storeStatus .fa{
+    display: none;
+    padding: 0px 2px;
+}
+.storeStatus.waiting .fa-spinner,
+.storeStatus.success .fa-check,
+.storeStatus.failed .fa-close{
+    display: inline-block;
+}
+
+
+.resultSummary{
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.landing{
+    padding-top: 100px;
+}
+
+.loading{
+    margin-top: 16px;
+}
+.loading .fa-circle-o-notch{
+    opacity: 0.6;
+    font-size: 18px;
+}
+.li_store{
+    margin-bottom: 40px;
+    border-bottom: 1px solid #dadada;
+}
+.li_store h3{
+    text-transform: capitalize;
+}
+.li_store .storeHeading{
+    text-decoration: none;
+}
+.li_store h3 img{
+    height: 32px;
+    vertical-align: baseline;
+}
+
+.li_hit{
+    position: relative;
+    border: 1px solid #dadada;
+    border-radius: 4px;
+    padding: 10px;
+}
+.li_hit h5{
+    margin-bottom: 6px;
+}
+.li_hit > .inline-block{
+    vertical-align: top;
+}
+
+.li_hit_appLink{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+.li_hit_icon{
+    padding-right: 6px;
+}
+.li_hit_icon img{
+    width: 80px;
+}
+
+
+
+@media (min-width:320px) {}/* smartphones, iPhone, portrait 480x320 phones */
+@media (min-width:375px) {}/* iPhone 6 portrait */
+@media (min-width:481px){
+}/* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
+@media (min-width:641px){
+    ul ul{
+        margin-left: 30px;
+    }
+}/* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
+@media (min-width:961px){
+
+}/* tablet, landscape iPad, lo-res laptops ands desktops */
+@media (min-width:1025px){
+}/* big landscape tablets, laptops, and desktops */
+@media (min-width:1281px){}/* hi-res laptops and desktops */
