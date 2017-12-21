@@ -144,6 +144,7 @@ ul ul{
     position: absolute;
     right: 10px;
     bottom: 10px;
+    text-decoration: none;
 }
 .li_hit_icon{
     padding-right: 6px;
@@ -157,6 +158,9 @@ ul ul{
 @media (min-width:320px){}/* smartphones, iPhone, portrait 480x320 phones */
 @media (min-width:375px){}/* iPhone 6 portrait */
 @media (min-width:481px){
+    .searchbar input{
+        width: 400px;
+    }
 }/* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
 @media (min-width:641px){
     ul ul{

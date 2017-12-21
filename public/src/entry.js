@@ -22,6 +22,17 @@ function SearchResultApps(props){
         }
     }
 
+    function openInAppStore(link){
+        if(!link || link.length < 1){ return ''; }
+        else { 
+            return(
+                <span>
+                    open in app store <i className="fa fa-external-link" aria-hidden="true"></i>
+                </span>
+            );
+        }
+    }
+
     if(props.list.length < 1){
         return <li>No results.</li>;
     } else {
@@ -36,7 +47,7 @@ function SearchResultApps(props){
                         <div>downloads: {app.downloads ? prettyNum(app.downloads) : 'Not Available'}</div>
                     </div>
                     <a href={app.link} target="_blank" className="li_hit_appLink">
-                        {app.link ? 'open in app store' : ''}
+                        {openInAppStore(app.link)}
                     </a>
                 </li>
             );
