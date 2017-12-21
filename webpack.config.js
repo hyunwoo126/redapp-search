@@ -9,7 +9,7 @@ module.exports = {
     },
     devServer: {
         publicPath:"/dist/",
-        contentBase: path.resolve(__dirname+'/public/dist', '.'),
+        contentBase: path.resolve(__dirname+'/public/', 'dist'),
         port: 3000,
         proxy: {
             "/search": {
