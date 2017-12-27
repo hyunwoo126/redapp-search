@@ -87,47 +87,7 @@ exports.tencent = function(appName, parentRes){
 }
 
 //no dl count
-//deprecated: JSON only, old data
-exports.xiaomi = function(appName, parentRes){
-    request.get({
-        url:'http://m.app.mi.com/searchapi?keywords='+encodeURI(appName)+'&pageIndex=0&pageSize=10',
-        headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'User-Agent': '',
-        },
-        json: true,
-    }, function (error, response, body) {
-        console.log('<<<< xiaomi >>>>');
-        var objRes = {
-            error: false,
-            store: 'xiaomi',
-            result: [],
-        }
-        if(error){ respError(parentRes, objRes); } 
-        else {
-            try{
-                var items = body.data;
-                for(var i = 0; i < items.length; i++){
-                    var item = items[i];
-                    var downloads = 0;
-                    var data = genDataObj(
-                        appName, 
-                        item.displayName, 
-                        downloads, 
-                        item.icon,
-                        item.publisherName,                        
-                    );
-                    if(data){ objRes.result.push(data); }
-                }
-                console.log('--xiaomi success--');
-                parentRes.send(objRes);
-            } 
-            catch(error){ console.log(error); respError(parentRes, objRes); }           
-        }        
-    });
-}
-
+//based on desktop web store app.mi.com
 exports.xiaomi = function(appName, parentRes){
     request.get({
             url:'http://app.mi.com/searchAll?keywords='+encodeURI(appName)+'&typeall=phone',
@@ -168,6 +128,52 @@ exports.xiaomi = function(appName, parentRes){
         }
     );
 }
+
+//no dl count
+//based on mobile web store m.app.mi.com
+exports.xiaomi = function(appName, parentRes){
+    request.get({
+        url:'http://m.app.mi.com/searchapi?keywords='+encodeURI(appName)+'&pageIndex=0&pageSize=10',
+        headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'User-Agent': '',
+        },
+        json: true,
+    }, function (error, response, body) {
+        console.log('<<<< xiaomi >>>>');
+        var objRes = {
+            error: false,
+            store: 'xiaomi',
+            result: [],
+        }
+        if(error){ respError(parentRes, objRes); } 
+        else {
+            try{
+                var items = body.data;
+                for(var i = 0; i < items.length; i++){
+                    var item = items[i];
+                    var downloads = 0;
+                    var data = genDataObj(
+                        appName, 
+                        item.displayName, 
+                        downloads, 
+                        item.icon,
+                        item.publisherName,
+                        false,
+                        'http://m.app.mi.com/#page=detail&id='+item.appId                        
+                    );
+                    if(data){ objRes.result.push(data); }
+                }
+                console.log('--xiaomi success--');
+                parentRes.send(objRes);
+            } 
+            catch(error){ console.log(error); respError(parentRes, objRes); }           
+        }        
+    });
+}
+
+
 
 
 //approx dl count
