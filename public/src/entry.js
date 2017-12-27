@@ -159,7 +159,7 @@ class App extends React.Component{
                 //     status: 'waiting',
                 // },
                 pp: {
-                    homeUrl: 'https://pro.25pp.com',
+                    homeUrl: 'https://www.25pp.com/android/',
                     status: 'waiting',
                 },
                 anzhi: {

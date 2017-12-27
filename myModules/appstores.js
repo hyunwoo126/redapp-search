@@ -88,7 +88,7 @@ exports.tencent = function(appName, parentRes){
 
 //no dl count
 //based on desktop web store app.mi.com
-exports.xiaomi = function(appName, parentRes){
+exports.xiaomi_old = function(appName, parentRes){
     request.get({
             url:'http://app.mi.com/searchAll?keywords='+encodeURI(appName)+'&typeall=phone',
         }, 
@@ -220,8 +220,53 @@ exports.baidu = function(appName, parentRes){
     );
 }
 
+//based on m.app.haosou.com
 //approx dl count for large dl
-exports[360] = function(appName, parentRes){
+exports['360'] = function(appName, parentRes){
+    request.get({
+            url:'http://m.app.haosou.com/search/index?q='+encodeURI(appName),
+        }, 
+        function (error, response, body) {
+            console.log('<<<< 360 >>>>');
+            var objRes = {
+                error: false,
+                store: '360',
+                result: [],
+            }
+            if(error){ respError(parentRes, objRes); } 
+            else {
+                try{
+                    var $ = cheerio.load(body);
+                    var items = $('li.app-item');
+                    for(var i = 0; i < items.length; i++){
+                        var $item = $(items[i]);
+                        var name = $item.find('.lt-c-tit h2').text();
+                        var downloads = $item.find('.lt-c-s-n > span').text();
+                        var icon = $item.find('.list-img img').prop('src');
+                        var desc = false;
+                        var link = 'http://m.app.haosou.com'+$item.attr('data-href');
+                        var data = genDataObj(
+                            appName, 
+                            name, 
+                            downloads,
+                            icon,
+                            false,
+                            desc,
+                            link
+                        );
+                        if(data){ objRes.result.push(data); }
+                    }
+                    console.log('--360 success--');
+                    parentRes.send(objRes);
+                } 
+                catch(error){ console.log(error); respError(parentRes, objRes); }           
+            }            
+        }
+    );
+}
+
+//approx dl count for large dl
+exports['360_old'] = function(appName, parentRes){
     request.get({
             url:'http://zhushou.360.cn/search/index/?kw='+encodeURI(appName),
         }, 
@@ -260,6 +305,59 @@ exports[360] = function(appName, parentRes){
                 } 
                 catch(error){ console.log(error); respError(parentRes, objRes); }           
             }            
+        }
+    );
+}
+
+//based on a.vmall.com
+//approx download count
+exports.huawei_json = function(appName, parentRes){
+    request.get({
+            url:'http://a.vmall.com/uowap/index?method=internal.getTabDetail&maxResults=25&reqPageNum=1&serviceType=13&uri=searchApp|'+encodeURI(appName),
+            json: true,
+        }, 
+        function (error, response, body) {
+            console.log('<<< huawei >>>');
+            var objRes = {
+                error: false,
+                store: 'huawei',
+                result: [],
+            }
+            if(error){ respError(parentRes, objRes); } 
+            else {
+                try{
+                    var bodyData = body.layoutData;
+                    var items = [];
+                    for(var j = 0; j < bodyData.length; j++){
+                        if(bodyData[j]['dataList-type'] != 3){ continue; }
+                        for(var k = 0; k < bodyData[j].dataList.length; k++){
+                            items.push(bodyData[j].dataList[k]);
+                        }
+                    }
+
+                    for(var i = 0; i < items.length; i++){
+                        var item = items[i];
+                        var name = item.name;
+                        var downloads = item.downCountDesc;
+                        var icon = item.icon;
+                        var desc = item.memo;
+                        var link = 'http://appstore.huawei.com/app/'+item.appid;
+                        var data = genDataObj(
+                            appName, 
+                            name, 
+                            downloads,
+                            icon,
+                            false,
+                            desc,
+                            link
+                        );
+                        if(data){ objRes.result.push(data); }
+                    }
+                    parentRes.send(objRes);
+                    console.log('--huawei success--');
+                } 
+                catch(error){ console.log(error); respError(parentRes, objRes); }           
+            }
         }
     );
 }
@@ -414,9 +512,54 @@ exports.wandoujia = function(appName, parentRes){
 }
 
 
-
+//based on 25pp.com
 //approx for large, exact for small downloads
 exports.pp = function(appName, parentRes){
+    request.get({
+            url: 'https://www.25pp.com/android/search_app/'+encodeURI(appName)+'/',
+        }, 
+        function (error, response, body) {
+            console.log('<<< pp >>>');
+            var objRes = {
+                error: false,
+                store: 'pp',
+                result: [],
+            }
+            if(error){ console.log(error); respError(parentRes, objRes); } 
+            else {
+                try{
+                    var $ = cheerio.load(body);
+                    var items = $('ul.app-list-2 > li');
+                    for(var i = 0; i < items.length; i++){
+                        var $item = $(items[i]);
+                        var name = $item.find('.app-info .app-title').text();
+                        var downloads = $item.find('.app-info .app-downs').text();
+                        var icon = $item.find('.app-icon img').prop('src');
+                        var desc = false;
+                        var link = 'https://www.25pp.com'+$item.find('.app-info a.app-title').prop('href');
+                        var data = genDataObj(
+                            appName, 
+                            name, 
+                            downloads,
+                            icon,
+                            false,
+                            desc,
+                            link
+                        );
+                        if(data){ objRes.result.push(data); }
+                    }
+                    parentRes.send(objRes);
+                    console.log('--pp success--');
+                } 
+                catch(error){ console.log(error); respError(parentRes, objRes); }           
+            }
+        }
+    );
+}
+
+//based on mobile wap.pp.cn
+//approx for large, exact for small downloads
+exports.pp_old = function(appName, parentRes){
     request.get({
             url:'https://wap.pp.cn/s/?key='+encodeURI(appName),
         }, 
