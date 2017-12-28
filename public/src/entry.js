@@ -128,8 +128,10 @@ class StoreStatusBar extends React.Component{
 class App extends React.Component{
     constructor(props){
         super(props);
+        var that = this;
         this.state = {
             landing: true,
+            popular: [],
             stores: {
                 xiaomi: {
                     homeUrl: 'http://app.xiaomi.com',
@@ -183,6 +185,27 @@ class App extends React.Component{
             totalDL: 0,
             hits: 0,
         }
+
+        const yr = new Date().getFullYear();
+        const mo = new Date().getMonth();
+        fetch(
+            "http://mi.talkingdata.com/rank/coverage.json?date="+yr+"-"+mo+"-01&typeId=0&dateType=m&rankingStart=0&rankingSize=10",
+        {
+            method: "GET",
+        }).then((resp) => resp.json())
+        .then(function(data){
+            var pop = [];
+            for(var i = 0; i < 10; i++){
+                pop[data[i].ranking] = data[i].appName;
+            }
+            that.setState({
+                popular: pop,
+            });
+        })
+        .catch(function(error){
+            console.error(error);
+        });
+
     }
 
     clearSearch(){
@@ -210,9 +233,11 @@ class App extends React.Component{
     }
 
 
-    search(){
+    search(term){
+        if(typeof term == 'string'){ this.state.currentTerm = term; }
         const searchTerm = this.state.currentTerm;
         if(searchTerm == ''){ return; }
+        this.refs.search_input.blur();
         this.clearSearch();
         this.setState({
             searchTerm: searchTerm,
@@ -311,7 +336,7 @@ class App extends React.Component{
     renderSearchbar(){
         return (
             <div className="searchbar">
-                <input type="text" placeholder="try 微信 or QQ" autoFocus="true" className="base_boxshadow_1"
+                <input type="text" ref="search_input" placeholder="Type a name of an app..." autoFocus="true" className="base_boxshadow_1"
                     onChange={(event) => this.handleInputChange(event)} 
                     onKeyPress={(event) => this.handleKeypress(event)}
                 />
@@ -322,6 +347,24 @@ class App extends React.Component{
         );
     }
 
+    renderPopular_app(i){
+        return (<span key={i} className="mostPopular_list" 
+                    onClick={()=>{this.search(this.state.popular[i])}}>{this.state.popular[i]}</span>
+                );
+    }
+
+    renderPopular(){
+        if(!this.state.landing || this.state.popular.length < 1){ return ''; }
+        var popular = [];
+        for(var i in this.state.popular){
+            popular.push(this.renderPopular_app(i));
+        }
+        return (<div className="mostPopular">
+                    <div className="mostPopular_title">This month's most popular apps in China:</div>
+                    {popular}
+                </div>);
+    }
+
 
     render(){
         return(
@@ -330,6 +373,7 @@ class App extends React.Component{
                     <center>
                         <h1>China's Android Market</h1>
                         {this.renderSearchbar()}
+                        <div>{this.renderPopular()}</div>
                         <img src="img/bg.jpg"/>
                         <StoreStatusBar landing={this.state.landing} stores={this.state.stores}/>
                     </center>
@@ -349,3 +393,4 @@ ReactDOM.render(
     <App />,
     document.getElementById('app')
 );
+

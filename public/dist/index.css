@@ -102,8 +102,26 @@ ul ul{
 }
 
 .landing{
-    padding-top: 20%;
+    padding-top: 0px;
 }
+
+.mostPopular{
+    color: #6f6f6f;
+    display: inline-block;
+}
+.mostPopular_title{
+    font-weight: bold;
+}
+.mostPopular_list{
+    display: inline-block;
+    padding: 2px 24px 2px 0px;
+    cursor: pointer; cursor: hand;
+}
+.mostPopular_list:hover{
+    color: #1EAEDB;
+    text-decoration: underline;
+}
+
 
 .loading{
     margin-top: 16px;
@@ -156,7 +174,11 @@ ul ul{
 
 
 @media (min-width:320px){}/* smartphones, iPhone, portrait 480x320 phones */
-@media (min-width:375px){}/* iPhone 6 portrait */
+@media (min-width:375px){
+    .landing{
+        padding-top: 16%;
+    }
+}/* iPhone 6 portrait */
 @media (min-width:481px){
     .searchbar input{
         width: 400px;
@@ -165,6 +187,9 @@ ul ul{
 @media (min-width:641px){
     ul ul{
         margin-left: 30px;
+    }
+    .mostPopular_title{
+        text-align: left;
     }
 }/* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
 @media (min-width:961px){
