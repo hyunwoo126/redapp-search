@@ -8,7 +8,19 @@ import ReactDOM from 'react-dom';
 
 const prettyNum = function(x){
     if(typeof x != 'number'){ return x; }
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const trill = Number(1+'e9'), bill = Number(1+'e6'), mill = Number(1+'e6');
+    if(x > trill){
+        return Number(Math.round(x/trill+'e1')+'e-1')+' trillion';
+    }
+    else if(x > bill){
+        return Number(Math.round(x/bill+'e1')+'e-1')+' billion';
+    }
+    else if(x > mill){
+        return Number(Math.round(x/mill+'e1')+'e-1')+' million';
+    }
+    else{
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }    
 }
 
 function SearchResultApps(props){
