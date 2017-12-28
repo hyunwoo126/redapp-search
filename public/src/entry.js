@@ -200,6 +200,7 @@ class App extends React.Component{
 
         const yr = new Date().getFullYear();
         const mo = new Date().getMonth();
+        if(mo == 0){  yr--; mo = 12; }
         fetch(
             "http://mi.talkingdata.com/rank/coverage.json?date="+yr+"-"+mo+"-01&typeId=0&dateType=m&rankingStart=0&rankingSize=10",
         {
@@ -372,7 +373,7 @@ class App extends React.Component{
             popular.push(this.renderPopular_app(i));
         }
         return (<div className="mostPopular">
-                    <div className="mostPopular_title">This month's most popular apps in China:</div>
+                    <div className="mostPopular_title">Most popular apps in China:</div>
                     {popular}
                 </div>);
     }
