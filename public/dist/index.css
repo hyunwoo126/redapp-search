@@ -149,7 +149,8 @@ ul ul{
     position: relative;
     border: 1px solid #dadada;
     border-radius: 4px;
-    padding: 10px;
+    padding: 4px;
+    white-space: nowrap;
 }
 .li_hit h5{
     margin-bottom: 6px;
@@ -159,10 +160,12 @@ ul ul{
 }
 
 .li_hit_appLink{
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
     text-decoration: none;
+    position: relative;
+    display: block;
+    text-align: right;
+    bottom: 0px;
+    right: 0px;
 }
 .li_hit_icon{
     padding-right: 6px;
@@ -183,6 +186,9 @@ ul ul{
     .searchbar input{
         width: 400px;
     }
+    .li_hit{
+        padding: 10px;
+    }
 }/* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */
 @media (min-width:641px){
     ul ul{
@@ -190,6 +196,11 @@ ul ul{
     }
     .mostPopular_title{
         text-align: left;
+    }
+    .li_hit_appLink{
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
     }
 }/* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */
 @media (min-width:961px){

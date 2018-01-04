@@ -47,6 +47,15 @@ function SearchResultApps(props){
         }
     }
 
+    function publisher(author){
+        if(!author || author.length < 1){ return ''; }
+        else {
+            return (
+                <div>publisher: {author}</div>
+            );
+        }
+    }
+
     if(props.list.length < 1){
         return <li>No results.</li>;
     } else {
@@ -58,6 +67,7 @@ function SearchResultApps(props){
                     </div>
                     <div className="inline-block">
                         <h5>{app.name}</h5>
+                        {publisher(app.author)}
                         <div>downloads: {app.downloads ? prettyNum(app.downloads) : 'Not Available'}</div>
                     </div>
                     <a href={app.link} target="_blank" className="li_hit_appLink">
