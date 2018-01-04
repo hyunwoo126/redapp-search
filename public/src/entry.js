@@ -200,7 +200,7 @@ class App extends React.Component{
 
         var yr = new Date().getFullYear();
         var mo = new Date().getMonth();
-        if(mo == 0){  yr--; mo = 12; }
+        if(mo == 0){  yr--; mo = 11; }
         fetch(
             "http://mi.talkingdata.com/rank/coverage.json?date="+yr+"-"+mo+"-01&typeId=0&dateType=m&rankingStart=0&rankingSize=10",
         {

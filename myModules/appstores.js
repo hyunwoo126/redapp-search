@@ -19,24 +19,39 @@ var cleanDownloadStr = function(str_ori){
 	return count*m;
 }
 
+/*
+    keyword match mechanic
+    - case insensitive
+    - if multiple words, then turned into array then looped through, must match all words somewhere in app name
+*/
 var genDataObj = function(nameTarget, nameFound, strDL, iconLink, author, desc, link){
     if(!nameFound | typeof nameFound != 'string' | typeof nameTarget != 'string'){ return false; }
-    nameFound = nameFound.replace(/(\s)/g, "");
+    nameFound = nameFound.replace(/(\s)/g, " ");
+    nameTarget = nameTarget.replace(/(\s)/g, " ");
     var nameFound_lc = nameFound.toLowerCase();
     var nameTarget_lc = nameTarget.toLowerCase();
-    if(nameFound_lc.indexOf(nameTarget_lc) == -1){
-        return false;
-    }
+    var nameTarget_arr = nameTarget_lc.split(" ");
 
-    return {
-        name: nameFound,
-        downloads: cleanDownloadStr(strDL),
-        exactMatch: nameFound_lc == nameTarget_lc ? true : false,
-        icon: iconLink || false,
-        author: author || false,
-        desc: desc || false,
-        link: link || false,
+    var count_match = 0;
+    for(var i in nameTarget_arr){
+        let word = nameTarget_arr[i];
+        if(nameFound_lc.indexOf(word) != -1){ count_match++; }
+
+        if(nameTarget_arr.length <= count_match){
+            return {
+                name: nameFound,
+                downloads: cleanDownloadStr(strDL),
+                exactMatch: nameFound_lc == nameTarget_lc ? true : false,
+                icon: iconLink || false,
+                author: author || false,
+                desc: desc || false,
+                link: link || false,
+            }
+        }
+
     }
+    //did not match any during for loop
+    return false;
 }
 
 const respError = function(parentRes, obj){
