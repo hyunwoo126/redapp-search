@@ -8,7 +8,8 @@ var cleanDownloadStr = function(str_ori){
 	else if(typeof str_ori != 'string'){ return false; }
 	str_ori = str_ori.toLowerCase();
 	var str_clean = str_ori.replace(/(([0-9]*[.])?[0-9]+mb|kb)|(次|下载|安装|:|：)|(\s)/g, "");
-	var count = parseFloat(str_clean) > 0 || 0;
+    var count = parseFloat(str_clean);
+    if(typeof count != 'number' || count < 0){ count = 0; }
 	
 	var m = 1;
 	if(str_clean.indexOf('亿') > -1){ m *= 100000000; }
